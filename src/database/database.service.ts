@@ -6,6 +6,7 @@ import * as Neode from 'neode';
 import Beep from '../beep/models/beep.model';
 import User from '../user/models/user.model'
 import Sheet from '../sheets/models/sheet.model';
+import Sauce from '../sauce/models/sauce.model';
 
 
 @Injectable()
@@ -16,7 +17,8 @@ export class DatabaseService {
         this.instance = new Neode(NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD).with({
             Beep,
             User,
-            Sheet
+            Sheet,
+            Sauce
         })
         this.instance.model('Beep', Beep).relationship
     }

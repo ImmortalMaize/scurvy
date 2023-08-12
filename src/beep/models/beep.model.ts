@@ -1,10 +1,11 @@
 import { SchemaObject, RelationshipNodeProperties } from "neode";
-import { made, submitted } from "./rel";
+import { based, made, submitted } from "./rel";
 
 export interface Beep {
     sauce: string,
     made: RelationshipNodeProperties,
     submitted: RelationshipNodeProperties
+    based: RelationshipNodeProperties
 }
 export default {
     sauce: {
@@ -16,5 +17,6 @@ export default {
         uri: true
     },
     made,
-    submitted
+    submitted,
+    based
 } as SchemaObject

@@ -16,7 +16,7 @@ export const submitted: RelationshipNodeProperties = {
 
 export const based: RelationshipNodeProperties = {
     type: "relationship",
-    target: "Beep",
+    target: "Sauce",
     relationship: "BASED_ON",
     direction: "out",
     properties: {

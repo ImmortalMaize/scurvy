@@ -27,6 +27,7 @@ export class BeepController {
             }
         })
     }
+    
     private async connectBeepToSheets(beep: Neode.Node<unknown>, sheets: string[]) {
         await Promise.all(sheets.map(async sheet => {
             return await this.sheetService.merge(sheet)
@@ -36,25 +37,26 @@ export class BeepController {
             }
         })
     }
-    private async connectBeepToSauces(beep: Neode.Node<unknown>, sauces: {sauce: string, type: string}[]) {
+
+    private async connectBeepToSauces(beep: Neode.Node<unknown>, sauces: string[]) {
         await Promise.all(sauces.map(async sauce => {
-            return await this.sauceService.merge(sauce.sauce)
-        })).then(sauce => {
-            for (let sauce of sauces) {
-                sauce.relateTo(beep, 'basedOn', {
-                    type
-                })
+            return await this.sauceService.merge(sauce)
+        })).then(mergedSauces => {
+            for (let sauce of mergedSauces) {
+                sauce.relateTo(beep, 'based')
             }
         })
     }
+
     @Post('')
-    public async makeBeep(@Body('sauce') sauce: string, @Body('authors') authors: string[], @Body('sheets') sheets: string[], @Body('basedOn') basedOn: string) {
+    public async makeBeep(@Body('sauce') sauce: string, @Body('authors') authors: string[], @Body('sheets') sheets: string[], @Body('basedOn') basedOn: string[]) {
         const beep = await this.beepService.makeBeep(sauce)
         if (authors) await this.connectBeepToUsers(beep, authors)
         if (sheets) await this.connectBeepToSheets(beep, sheets)
-        if (sauce)
+        if (sauce) await this.connectBeepToSauces(beep, basedOn)
         return beep.properties()
     }
+
     @Delete()
     async clear() {
         return await this.beepService.clear()
