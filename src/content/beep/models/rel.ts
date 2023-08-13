@@ -23,3 +23,10 @@ export const based: RelationshipNodeProperties = {
         type: "string",
     }
 }
+
+export const liked: RelationshipNodeProperties = {
+    type: "relationship",
+    target: "Sauce",
+    relationship: "LIKED",
+    direction: "in",
+}

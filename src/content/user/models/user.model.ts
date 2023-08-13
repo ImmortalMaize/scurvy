@@ -1,12 +1,16 @@
 import {RelationshipNodeProperties, SchemaObject} from "neode";
 import { made } from './rel';
+import { Content } from "src/database";
 
-export interface User {
-    sauce: string,
+export interface UserDto {
+    discordId: string
+}
+
+export interface UserInterface extends Content, UserDto {
     made: RelationshipNodeProperties
 }
 
-export default {
+export const User = {
     discordId: {
         type: "number",
         unique: true,

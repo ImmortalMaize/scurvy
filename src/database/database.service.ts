@@ -1,12 +1,10 @@
-import neo4j, { Driver, EagerResult, RecordShape } from 'neo4j-driver';
+import neo4j, { Driver, EagerResult, RecordShape, Session } from 'neo4j-driver';
 import { Injectable } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs';
 import * as Neode from 'neode';
-import Beep from '../beep/models/beep.model';
-import User from '../user/models/user.model'
-import Sheet from '../sheets/models/sheet.model';
-import Sauce from '../sauce/models/sauce.model';
+import { Beep, User, Sheet, Sauce } from '../content/models';
+import { Content } from './interfaces/content.interface';
 
 
 @Injectable()
@@ -25,24 +23,35 @@ export class DatabaseService {
     public getDaddy() {
         return this.instance;
     }
-    public async readScript(data: string, parameters?: { [key: string]: any }): Promise<any> {
-        const query = fs.readFileSync(join(process.cwd() + data + ".cyp"), {encoding: 'utf8'});    
-        return await this.instance.cypher(query, parameters)
+    public readScript(data: string): string {
+        return fs.readFileSync(join(process.cwd() + data + ".cyp"), {encoding: 'utf8'});    
     }
     public async read(query: string, parameters?: { [key: string]: any }): Promise<any> {
-        return await this.instance.cypher(query, parameters)
+        return await this.instance.readCypher(query, parameters)
     }
-    public async do(query: string, parameters?: { [key: string]: any }, get: "records"|"summary" = "records"): Promise<any> {
-        return (await this.instance.cypher(query, parameters))[get]
+    public async run(query: string, parameters?: { [key: string]: any }): Promise<any> {
+        return (await this.instance.writeCypher(query, parameters))
     }
-    public async make(label: string, properties: { [key: string]: any }) {
-        return await this.instance.create(label, properties)
+    public try(query: string, parameters?: { [key: string]: any }): any {
+        return this.instance.session().run(query, parameters)
     }
-    public async findByPriamry(model: string, key: number) {
+    public async make<ContentInterface>(model: string, properties: { [key: string]: any }) {
+        return await this.instance.create(model, properties) as Neode.Node<Content>
+    }
+    public async getAll(model: string) {
+        return await this.instance.all(model)
+    }
+    public async findByPrimary(model: string, key: string) {
         return await this.instance.find(model, key)
     }
     public async findById(model: string, id: number) {
-        return await this.instance.find(model, id)
+        return await this.instance.findById(model, id)
+    }
+    public async findByKey(model: string, key: string, value: any) {
+        return await this.instance.first(model, key, value)
+    }
+    public async findManyByKey(model: string, properties: { [key: string]: any }) {
+        return await this.instance.all(model, properties)
     }
     public async clear(model: string) {
         return await this.instance.deleteAll(model)
