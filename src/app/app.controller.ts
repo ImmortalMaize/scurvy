@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Response } from '@nestjs/common';
 import { AppService } from './app.service';
 import { DatabaseService } from '../database/database.service';
 
@@ -6,8 +6,8 @@ import { DatabaseService } from '../database/database.service';
 export class AppController {
   constructor(private readonly appService: AppService, private readonly databaseService: DatabaseService) {}
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getHello(@Response() res) {
+    res.send('<h1>Hello World!</h1>')
   }
   
   @Delete()
