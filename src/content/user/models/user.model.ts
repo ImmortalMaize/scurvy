@@ -12,7 +12,7 @@ export interface UserInterface extends Content, UserDto {
 
 export const User = {
     discordId: {
-        type: "number",
+        type: "string",
         unique: true,
         required: true,
         index: true,

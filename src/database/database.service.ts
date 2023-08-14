@@ -27,36 +27,36 @@ export class DatabaseService {
         return fs.readFileSync(join(process.cwd() + data + ".cyp"), {encoding: 'utf8'});    
     }
     public async read(query: string, parameters?: { [key: string]: any }): Promise<any> {
-        return await this.instance.readCypher(query, parameters)
+        return await this.instance.readCypher(query, parameters).catch((e) => { console.log(e) })
     }
     public async run(query: string, parameters?: { [key: string]: any }): Promise<any> {
-        return (await this.instance.writeCypher(query, parameters))
+        return await this.instance.writeCypher(query, parameters).catch((e) => { console.log(e) })
     }
     public try(query: string, parameters?: { [key: string]: any }): any {
-        return this.instance.session().run(query, parameters)
+        return this.instance.session().run(query, parameters).catch((e) => { console.log(e) })
     }
     public async make<ContentInterface>(model: string, properties: { [key: string]: any }) {
-        return await this.instance.create(model, properties) as Neode.Node<Content>
+        return await this.instance.create(model, properties).catch((e) => { console.log(e) })
     }
     public async getAll(model: string) {
-        return await this.instance.all(model)
+        return await this.instance.all(model).catch((e) => { console.log(e) })
     }
     public async findByPrimary(model: string, key: string) {
-        return await this.instance.find(model, key)
+        return await this.instance.find(model, key).catch((e) => { console.log(e) })
     }
     public async findById(model: string, id: number) {
-        return await this.instance.findById(model, id)
+        return await this.instance.findById(model, id).catch((e) => { console.log(e) })
     }
     public async findByKey(model: string, key: string, value: any) {
-        return await this.instance.first(model, key, value)
+        return await this.instance.first(model, key, value).catch((e) => { console.log(e) })
     }
     public async findManyByKey(model: string, properties: { [key: string]: any }) {
-        return await this.instance.all(model, properties)
+        return await this.instance.all(model, properties).catch((e) => { console.log(e) })
     }
     public async clear(model: string) {
-        return await this.instance.deleteAll(model)
+        return await this.instance.deleteAll(model).catch((e) => { console.log(e) })
     }
     public async merge(model: string, properties: { [key: string]: any }) {
-        return await this.instance.merge(model, properties)
+        return await this.instance.merge(model, properties).catch((e) => { console.log(e) })
     }
 }

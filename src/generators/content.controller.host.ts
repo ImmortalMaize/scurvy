@@ -10,7 +10,7 @@ export interface ControllerHostInterface<ContentInterface extends Content, Conte
     findById(id: number): Promise<any>
     findByKey(key: string, value: any): Promise<any>
     findManyByKey(properties: { [key: string]: any }): Promise<any>
-    merge(name: string): Promise<any>
+    merge(...args: any): Promise<any>
     find(name: string): Promise<any>
     clear(): Promise<any>
 }
@@ -21,31 +21,38 @@ export function ContentControllerHost<ContentInterface extends Content, ContentD
         @Inject(service) readonly contentService: ContentServiceInterface<ContentInterface, ContentDto>
         @Get()
         async getAll() {
-            return (await this.contentService.getAll()).toJson()
+            const result = await this.contentService.getAll()
+            if (result) return result.toJson(); else return null
         }
         @Post()
         async make(properties: ContentDto) {
-            return (await this.contentService.make(properties)).toJson()
+            const result = await this.contentService.make(properties)
+            if (result) return result.toJson(); else return null
         }
         @Put(':index')
         async merge(@Param('index') index: any) {
-            return (await this.contentService.merge(index)).toJson()
+            const result = (await this.contentService.merge(index))
+            if (result) return result.toJson(); else return null
         }
         @Get('primary/:primary')
         async find(@Param('primary') primary: string) {
-            return (await this.contentService.findByPrimary(primary)).toJson()
+            const result = (await this.contentService.findByPrimary(primary))
+            if (result) return result.toJson(); else return null
         }
         @Get('id/:id')
         async findById(@Param('id') id: number) {
-            return (await this.contentService.findById(id)).toJson()
+            const result = (await this.contentService.findById(id))
+            if (result) return result.toJson(); else return null
         }
         @Get(':key/:value')
         async findByKey(@Param('key') key: string, @Param('value') value: any) {
-            return (await this.contentService.findByKey(key, value)).toJson()
+            const result = (await this.contentService.findByKey(key, value))
+            if (result) return result.toJson(); else return null
         }
         @Post('query')
         async findManyByKey(properties: { [key: string]: any }) {
-            return (await this.contentService.findManyByKey(properties)).toJson()
+            const result = (await this.contentService.findManyByKey(properties))
+            if (result) return result.toJson(); else return null
         }
         @Delete()
         async clear() {

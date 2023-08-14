@@ -4,13 +4,13 @@ import { Content } from "src/database";
 import { DatabaseService } from "src/database/database.service";
 
 export interface ContentServiceInterface<ContentInterface extends Content, ContentDto> {
-    make(properties: ContentDto): Promise<Neode.Node<unknown>>
-    merge(value: any): Promise<Neode.Node<unknown>>
-    findByPrimary(key: string): Promise<Neode.Node<unknown>>
-    findById(id: number): Promise<Neode.Node<unknown>>
-    findByKey(key: string, value: any): Promise<Neode.Node<unknown>>
-    findManyByKey(properties: { [key: string]: any }): Promise<Neode.NodeCollection>
-    getAll(): Promise<Neode.NodeCollection>
+    make(properties: ContentDto): Promise<Neode.Node<unknown>|void>
+    merge(value: any): Promise<Neode.Node<unknown>|void>
+    findByPrimary(key: string): Promise<Neode.Node<unknown>|void>
+    findById(id: number): Promise<Neode.Node<unknown>|void>
+    findByKey(key: string, value: any): Promise<Neode.Node<unknown>|void>
+    findManyByKey(properties: { [key: string]: any }): Promise<Neode.NodeCollection|void>
+    getAll(): Promise<Neode.NodeCollection|void>
     clear(): Promise<void>
 }
 
