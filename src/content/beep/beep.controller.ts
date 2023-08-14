@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Param, Post, Put } from '@nestjs/common';
 import { BeepService } from './beep.service';
 import { UserService } from '../user';
 import { Delete } from '@nestjs/common';
@@ -19,7 +19,7 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
     @Inject(BeepService) private beepService: BeepService
 
     @Post('')
-    async make (@Body('sauce') sauce: string, discordId: string, @Body('authors') authors: string[], @Body('sheets') sheets: string[], @Body('basedOn') basedOn: string[]) {
+    async make (@Body('sauce') sauce: string, @Body('discordId') discordId: string, @Body('authors') authors: string[], @Body('sheets') sheets: string[], @Body('basedOn') basedOn: string[]) {
         const beep = await this.beepService.make({
             sauce,
             discordId
@@ -29,6 +29,19 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
         if (sauce) await this.connectBeepToSauces(beep, basedOn)
         return beep.properties()
     }
+
+    @Put(':discordId')
+    async merge (@Body('sauce') sauce: string, @Param('discordId') discordId: string, @Body('authors') authors: string[], @Body('sheets') sheets: string[], @Body('basedOn') basedOn: string[]) {
+        const beep = await this.beepService.make({
+            sauce,
+            discordId
+        })
+        if (authors) await this.connectBeepToUsers(beep, authors)
+        if (sheets) await this.connectBeepToSheets(beep, sheets)
+        if (sauce) await this.connectBeepToSauces(beep, basedOn)
+        return beep.properties()
+    }
+
     private async connectBeepToUsers(beep: Neode.Node<unknown>, authors: string[]) {
         await Promise.all(authors.map(async author => {
             return await this.userService.merge(author)

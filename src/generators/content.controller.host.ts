@@ -10,7 +10,7 @@ export interface ControllerHostInterface<ContentInterface extends Content, Conte
     findById(id: number): Promise<any>
     findByKey(key: string, value: any): Promise<any>
     findManyByKey(properties: { [key: string]: any }): Promise<any>
-    merge(name: string): Promise<any>
+    merge(...args: any): Promise<any>
     find(name: string): Promise<any>
     clear(): Promise<any>
 }
