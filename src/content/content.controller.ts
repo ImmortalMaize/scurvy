@@ -1,13 +1,12 @@
-/*
-https://docs.nestjs.com/controllers#controllers
-*/
-
-import { Controller, Get, Param } from '@nestjs/common';
-import { DatabaseService } from 'src/database';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { ContentService } from './content.service';
 
 @Controller()
 export class ContentController {
-    constructor(databaseService: DatabaseService) {}
+    constructor(private contentService: ContentService) {}
 
-
+    @Delete()
+    async clearAll() {
+        return await this.contentService.clearAll()
+    }
 }

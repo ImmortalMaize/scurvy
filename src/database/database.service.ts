@@ -18,7 +18,6 @@ export class DatabaseService {
             Sheet,
             Sauce
         })
-        this.instance.model('Beep', Beep).relationship
     }
     public getDaddy() {
         return this.instance;

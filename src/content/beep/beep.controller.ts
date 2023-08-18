@@ -41,7 +41,7 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
             discordId
         })
         if (!beep) return null
-        /*if (authors) await this.connectBeepToUsers(beep, authors)*/
+        if (authors) await this.connectBeepToUsers(beep, authors)
         if (sheets) await this.connectBeepToSheets(beep, sheets)
         if (sauce) await this.connectBeepToSauces(beep, basedOn)
         return beep.properties()
