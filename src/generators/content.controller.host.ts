@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Inject, Param, Post, Put, Type } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Type } from "@nestjs/common";
 import { DatabaseService } from "src/database/database.service";
 import { ContentServiceInterface } from "./content.service.host";
 import { ContentServiceHost } from 'src/generators/content.service.host';
@@ -30,8 +30,8 @@ export function ContentControllerHost<ContentInterface extends Content, ContentD
             if (result) return result.toJson(); else return null
         }
         @Put(':index')
-        async merge(@Param('index') index: any) {
-            const result = (await this.contentService.merge(index))
+        async merge(@Param('index') index: any, @Body() properties: ContentDto) {
+            const result = (await this.contentService.merge(index, properties))
             if (result) return result.toJson(); else return null
         }
         @Get('primary/:primary')

@@ -13,8 +13,18 @@ export interface BeepInterface extends Content, BeepDto {
     based?: RelationshipNodeProperties
 }
 export const Beep = {
-    sauce: "string",
-    discordId: "string",
+    sauce: {
+        type: "string",
+        index: true,
+        unique: true,
+        uri: true
+    },
+    discordId: {
+        type: "string",
+        index: true,
+        primary: true,
+        unique: true
+    },
     // made,
     // submitted,
     // based

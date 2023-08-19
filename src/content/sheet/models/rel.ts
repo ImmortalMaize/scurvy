@@ -4,5 +4,8 @@ export const submitted: RelationshipNodeProperties = {
     type: "relationship",
     target: "Beep",
     relationship: "SUBMITTED_TO",
-    direction: "in"
+    direction: "in",
+    properties: {
+        caption: "string"
+    }
 }

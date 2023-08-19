@@ -55,7 +55,7 @@ export class DatabaseService {
     public async clear(model: string) {
         return await this.instance.deleteAll(model).catch((e) => { console.log(e) })
     }
-    public async merge(model: string, properties: { [key: string]: any }) {
+    public async merge(model: string, properties: { [key: string]: any } = {}) {
         return await this.instance.merge(model, properties).catch((e) => { console.log(e) })
     }
 }

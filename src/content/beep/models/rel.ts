@@ -11,7 +11,10 @@ export const submitted: RelationshipNodeProperties = {
     type: "relationship",
     target: "Sheet",
     relationship: "SUBMITTED_TO",
-    direction: "out"
+    direction: "out",
+    properties: {
+        caption: "string"
+    }
 }
 
 export const based: RelationshipNodeProperties = {

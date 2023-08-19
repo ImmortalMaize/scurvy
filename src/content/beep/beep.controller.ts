@@ -11,6 +11,10 @@ import { SheetService } from '../sheet';
 import { SauceService } from '../sauce';
 import { ContentControllerHost } from 'src/generators/content.controller.host';
 
+interface SheetSubmission {
+    name: string,
+    caption: string,
+}
 //@ts-ignore
 export class BeepController extends ContentControllerHost<BeepInterface>(BeepService, '') {
     @Inject(UserService) private userService: UserService
@@ -19,7 +23,7 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
     @Inject(BeepService) private beepService: BeepService
 
     @Post('')
-    async make (@Body('sauce') sauce: string, @Body('discordId') discordId: string, @Body('authors') authors: string[], @Body('sheets') sheets: string[], @Body('basedOn') basedOn: string[]) {
+    async make(@Body('sauce') sauce: string, @Body('discordId') discordId: string, @Body('authors') authors: string[], @Body('sheets') sheets: SheetSubmission[], @Body('basedOn') basedOn: string[]) {
         console.log(sauce)
         console.log(discordId)
         const beep = await this.beepService.make({
@@ -34,16 +38,15 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
     }
 
     @Put(':discordId')
-    async merge (@Body('sauce') sauce: string, @Param('discordId') discordId: string, @Body('authors') authors: string[], @Body('sheets') sheets: string[], @Body('basedOn') basedOn: string[]) {
+    async merge(@Body('sauce') sauce: string, @Param('discordId') discordId: string, @Body('caption') caption: string, @Body('authors') authors: string[], @Body('sheets') sheets: SheetSubmission[], @Body('basedOn') basedOn: string[]) {
         //@ts-ignore
-        const beep = await this.beepService.make({
-            sauce,
-            discordId
+        const beep = await this.beepService.merge(discordId, {
+            sauce
         })
         if (!beep) return null
         if (authors) await this.connectBeepToUsers(beep, authors)
         if (sheets) await this.connectBeepToSheets(beep, sheets)
-        if (sauce) await this.connectBeepToSauces(beep, basedOn)
+        if (basedOn) await this.connectBeepToSauces(beep, basedOn)
         return beep.properties()
     }
 
@@ -56,13 +59,16 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
             }
         })
     }
-    
-    private async connectBeepToSheets(beep: Neode.Node<unknown>, sheets: string[]) {
+
+    private async connectBeepToSheets(beep: Neode.Node<unknown>, sheets: {name: string, caption: string}[]) {
         await Promise.all(sheets.map(async sheet => {
-            return await this.sheetService.merge(sheet)
-        })).then(sheets => {
-            for (let sheet of sheets) {
-                if (sheet) sheet.relateTo(beep, 'submitted')
+            const mergedSheet = await this.sheetService.merge(sheet.name)
+            return {mergedSheet, caption: sheet.caption}
+        })).then(mergedSheets => {
+            for (let sheet of mergedSheets) {
+                if (sheet.mergedSheet) sheet.mergedSheet.relateTo(beep, 'submitted', {
+                    caption: sheet.caption
+                })
             }
         })
     }
@@ -81,6 +87,6 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
     async like(id1: string, id2: string) {
         const user = await this.userService.findByPrimary(id1);
         const beep = await this.beepService.findByPrimary(id2);
-        if (user&&beep) return await (user.relateTo(beep, 'liked'))
+        if (user && beep) return await (user.relateTo(beep, 'liked'))
     }
 }

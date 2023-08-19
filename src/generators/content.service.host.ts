@@ -5,7 +5,7 @@ import { DatabaseService } from "src/database/database.service";
 
 export interface ContentServiceInterface<ContentInterface extends Content, ContentDto> {
     make(properties: ContentDto): Promise<Neode.Node<unknown>|void>
-    merge(value: any): Promise<Neode.Node<unknown>|void>
+    merge(value: string, properties?: {[key: string]: any}): Promise<Neode.Node<unknown>|void>
     findByPrimary(key: string): Promise<Neode.Node<unknown>|void>
     findById(id: number): Promise<Neode.Node<unknown>|void>
     findByKey(key: string, value: any): Promise<Neode.Node<unknown>|void>
@@ -19,11 +19,11 @@ export function ContentServiceHost<ContentInterface extends Content, ContentDto>
         @Inject(DatabaseService) protected readonly databaseService: DatabaseService
         
         async make(properties: ContentDto) {
-         return await this.databaseService.make(model, properties)
+            return await this.databaseService.make(model, properties)
         }
 
-        async merge(value: any) {
-            return await this.databaseService.merge(model, { [index]: value })
+        async merge(value: string, properties: { [key: string]: any } = {}) {
+            return await this.databaseService.merge(model, { [index]: value, ...properties})
         }
 
         async findByPrimary(key: string) {
