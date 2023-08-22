@@ -7,7 +7,7 @@ export const made: RelationshipNodeProperties = {
     direction: "out"
 }
 
-export const liked: RelationshipNodeProperties = {
+export const likedBeep: RelationshipNodeProperties = {
     type: "relationship",
     target: "Sauce",
     relationship: "LIKED",

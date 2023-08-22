@@ -5,7 +5,7 @@ import { ContentService } from './content.service';
 export class ContentController {
     constructor(private contentService: ContentService) {}
 
-    @Delete()
+    @Delete('')
     async clearAll() {
         return await this.contentService.clearAll()
     }

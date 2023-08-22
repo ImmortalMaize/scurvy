@@ -1,5 +1,5 @@
 import {RelationshipNodeProperties, SchemaObject} from "neode";
-import { made } from './rel';
+import { made, likedBeep } from './rel';
 import { Content } from "src/database";
 
 export interface UserDto {
@@ -18,7 +18,8 @@ export const User = {
         index: true,
         primary: true,
     },
-    made
+    made,
+    likedBeep
 } as SchemaObject
 
 

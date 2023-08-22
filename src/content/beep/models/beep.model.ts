@@ -1,5 +1,5 @@
 import { SchemaObject, RelationshipNodeProperties } from "neode";
-import { based, made, submitted } from "./rel";
+import { based, made, submitted, likedBeep } from "./rel";
 import { Content } from "src/database";
 
 export interface BeepDto {
@@ -25,7 +25,8 @@ export const Beep = {
         primary: true,
         unique: true
     },
-    // made,
-    // submitted,
-    // based
+    made,
+    submitted,
+    based,
+    likedBeep
 } as SchemaObject

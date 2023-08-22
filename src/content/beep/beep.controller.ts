@@ -2,10 +2,9 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Body, Controller, Inject, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, HttpException, Inject, Param, Post, Put, Response } from '@nestjs/common';
 import { BeepService } from './beep.service';
 import { UserService } from '../user';
-import { Delete } from '@nestjs/common';
 import Neode from 'neode';
 import { SheetService } from '../sheet';
 import { SauceService } from '../sauce';
@@ -83,10 +82,13 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
         })
     }
 
-    @Post(':id1:/like_beep/:id2')
-    async like(id1: string, id2: string) {
+    @Post(':id2/liked_by/:id1')
+    async like(@Param('id1') id1: string, @Param('id2') id2: string) {
+        console.log(id1, id2)
         const user = await this.userService.findByPrimary(id1);
         const beep = await this.beepService.findByPrimary(id2);
-        if (user && beep) return await (user.relateTo(beep, 'liked'))
+        if (!user) throw new HttpException('User not found.', 404)
+        if (!beep) throw new HttpException('Beep not found.', 404)
+        else { const relation = await (user.relateTo(beep, 'likedBeep')); return await relation.toJson()}
     }
 }
