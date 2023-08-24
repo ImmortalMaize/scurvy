@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Response } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, Response } from '@nestjs/common';
 import { AppService } from './app.service';
 import { DatabaseService } from '../database/database.service';
 
@@ -12,6 +12,7 @@ export class AppController {
   
   @Delete()
   async clear(@Body('model') model: string) {
+    if (!model) throw new HttpException('No model specified.', 400)
     return await this.databaseService.clear(model)
   }
 }

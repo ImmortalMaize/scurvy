@@ -1,7 +1,3 @@
-/*
-https://docs.nestjs.com/controllers#controllers
-*/
-
 import { Body, Controller, HttpException, Inject, Param, Post, Put, Response } from '@nestjs/common';
 import { BeepService } from './beep.service';
 import { UserService } from '../user';

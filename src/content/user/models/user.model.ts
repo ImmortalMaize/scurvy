@@ -18,6 +18,10 @@ export const User = {
         index: true,
         primary: true,
     },
+    username: {
+        type: "string",
+        index: true
+    },
     made,
     likedBeep
 } as SchemaObject

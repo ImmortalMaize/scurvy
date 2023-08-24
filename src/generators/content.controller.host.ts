@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Type } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, Query, Type } from "@nestjs/common";
 import { DatabaseService } from "src/database/database.service";
 import { ContentServiceInterface } from "./content.service.host";
 import { ContentServiceHost } from 'src/generators/content.service.host';
@@ -34,26 +34,76 @@ export function ContentControllerHost<ContentInterface extends Content, ContentD
             const result = (await this.contentService.merge(index, properties))
             if (result) return result.toJson(); else return null
         }
+
+        //routes by primary key
         @Get('primary/:primary')
         async find(@Param('primary') primary: string) {
             const result = (await this.contentService.findByPrimary(primary))
             if (result) return result.toJson(); else return null
         }
+        @Patch('primary/:primary')
+        async update(@Param('primary') primary: string, @Body() properties: ContentInterface) {
+            const result = (await this.contentService.updateByPrimary(primary, properties))
+            if (result) return result.toJson(); else return null
+        }
+        @Delete('primary/:primary')
+        async delete(@Param('primary') primary: string) {
+            await this.contentService.deleteByPrimary(primary)
+            return
+        }
+
+        // routes by internal id
         @Get('id/:id')
         async findById(@Param('id') id: number) {
             const result = (await this.contentService.findById(id))
             if (result) return result.toJson(); else return null
         }
+        @Patch('id/:id')
+        async updateById(@Param('id') id: number, @Body() properties: ContentInterface) {
+            const result = (await this.contentService.updateById(id, properties))
+            if (result) return result.toJson(); else return null
+        }
+        @Delete('id/:id')
+        async deleteById(@Param('id') id: number) {
+            await this.contentService.deleteById(id)
+            return
+        }
+
+        // routes by key
         @Get(':key/:value')
         async findByKey(@Param('key') key: string, @Param('value') value: any) {
             const result = (await this.contentService.findByKey(key, value))
             if (result) return result.toJson(); else return null
         }
-        @Post('query')
-        async findManyByKey(properties: { [key: string]: any }) {
+        @Patch(':key/:value')
+        async updateByKey(@Param('key') key: string, @Param('value') value: any, @Body() properties: ContentInterface) {
+            const result = (await this.contentService.updateByKey(key, value, properties))
+            if (result) return result.toJson(); else return null
+        }
+        @Delete(':key/:value')
+        async deleteByKey(@Param('key') key: string, @Param('value') value: any) {
+            await this.contentService.deleteByKey(key, value)
+            return
+        }
+
+
+        // routes by query
+        @Get('query')
+        async findManyByKey(@Query() properties: ContentInterface) {
             const result = (await this.contentService.findManyByKey(properties))
             if (result) return result.toJson(); else return null
         }
+        @Patch('query')
+        async updateManyByKey(@Query() properties: ContentInterface, @Body() update: ContentDto) {
+            const result = (await this.contentService.updateManyByKey(properties, update))
+            if (result) return result.toJson(); else return null
+        }
+        @Delete('query')
+        async deleteManyByKey(@Query() properties: ContentInterface) {
+            await this.contentService.deleteManyByKey(properties)
+            return
+        }
+
         @Delete()
         async clear() {
             return await this.contentService.clear()
