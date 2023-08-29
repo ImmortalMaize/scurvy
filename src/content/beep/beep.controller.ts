@@ -18,12 +18,13 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
     @Inject(BeepService) private beepService: BeepService
 
     @Post('')
-    async make(@Body('sauce') sauce: string, @Body('discordId') discordId: string, @Body('authors') authors: string[], @Body('sheets') sheets: SheetSubmission[], @Body('basedOn') basedOn: string[]) {
+    async make(@Body('sauce') sauce: string, @Body('published') published: Date, @Body('discordId') discordId: string, @Body('authors') authors: string[], @Body('sheets') sheets: SheetSubmission[], @Body('basedOn') basedOn: string[]) {
         console.log(sauce)
         console.log(discordId)
         const beep = await this.beepService.make({
             sauce,
-            discordId
+            discordId,
+            published
         })
         if (!beep) return null
         if (authors) await this.connectBeepToUsers(beep, authors)

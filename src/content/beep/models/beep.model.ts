@@ -5,6 +5,7 @@ import { Content } from "src/database";
 export interface BeepDto {
     sauce: string,
     discordId: string
+    published: Date
 }
 
 export interface BeepInterface extends Content, BeepDto {
@@ -24,6 +25,10 @@ export const Beep = {
         index: true,
         primary: true,
         unique: true
+    },
+    published: {
+        type: 'date',
+        required: true
     },
     made,
     submitted,
