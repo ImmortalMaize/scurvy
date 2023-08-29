@@ -16,6 +16,7 @@ export interface BeepInterface extends Content, BeepDto {
 export const Beep = {
     sauce: {
         type: "string",
+        required: true,
         index: true,
         unique: true,
         uri: true

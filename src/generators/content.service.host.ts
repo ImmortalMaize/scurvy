@@ -27,18 +27,15 @@ export function ContentServiceHost<ContentInterface extends Content, ContentDto>
         @Inject(DatabaseService) protected readonly databaseService: DatabaseService
         private readonly logger = new Logger(model + 'Service')
         async make(properties: ContentDto) {
+            this.logger.log(`Making ${model.toLowerCase()} with properties:
+            ${JSON.stringify(properties)}`)
             return await this.databaseService.make(model, properties)
         }
 
         async merge(value: string, properties: ContentDto) {
-            this.logger.log(`Merging ${model.toLowerCase()} with "${value}" as ${index.toString()}.`)
-            const merged = await this.databaseService.merge(model, { [index]: value })
-            if (merged) {
-                this.logger.log(`Updating with properties:
-                ${JSON.stringify(properties)}`)
-                return await merged.update(properties)
-            }
-            else return null
+            this.logger.log(`Merging ${model.toLowerCase()} with properties:
+            ${JSON.stringify(properties)}`)
+            return await this.databaseService.merge(model, { [index]: value, ...properties })
         }
 
         async findByPrimary(key: string) {

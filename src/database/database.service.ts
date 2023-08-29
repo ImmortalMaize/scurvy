@@ -29,66 +29,77 @@ export class DatabaseService {
     public async read(query: string, parameters?: { [key: string]: any }): Promise<any> {
         return await this.instance.readCypher(query, parameters).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not read query", 400)
         })
     }
     public async run(query: string, parameters?: { [key: string]: any }): Promise<any> {
         return await this.instance.writeCypher(query, parameters).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not run query", 400)
         })
     }
     public try(query: string, parameters?: { [key: string]: any }): any {
         return this.instance.session().run(query, parameters).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not run query", 400)
         })
     }
     public async make<ContentInterface>(model: string, properties: { [key: string]: any }) {
         return await this.instance.create(model, properties).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not create " + model.toLowerCase() + "s", 400)
         })
     }
     public async getAll(model: string) {
         return await this.instance.all(model).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not get all" + model.toLowerCase() + "s", 400)
         })
     }
     public async findByPrimary(model: string, key: string) {
         return await this.instance.find(model, key).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not find " + model.toLowerCase() + " with primary key " + key, 404)
         })
     }
     public async findById(model: string, id: number) {
         return await this.instance.findById(model, id).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not find " + model.toLowerCase() + " with id " + id, 404)
         })
     }
     public async findByKey(model: string, key: string, value: any) {
         return await this.instance.first(model, key, value).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not find " + model.toLowerCase() + " with " + key + " " + value, 404)
         })
     }
     public async findManyByKey(model: string, properties: { [key: string]: any }) {
         return await this.instance.all(model, properties).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not find " + model.toLowerCase() + " with properties: " + JSON.stringify(properties), 404)
         })
     }
     public async clear(model: string) {
         return await this.instance.deleteAll(model).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not clear " + model.toLowerCase() + "s", 400)
         })
     }
     public async merge(model: string, properties: { [key: string]: any } = {}) {
         return await this.instance.merge(model, properties).catch((e) => {
             this.logger.error(e)
+            console.log(e)
             throw new HttpException("Could not merge " + model.toLowerCase() + " with indices: " + JSON.stringify(properties), 400)
         })
     }

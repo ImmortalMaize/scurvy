@@ -5,6 +5,7 @@ import Neode from 'neode';
 import { SheetService } from '../sheet';
 import { SauceService } from '../sauce';
 import { ContentControllerHost } from 'src/generators/content.controller.host';
+import { BeepDto } from './models/beep.model';
 
 interface SheetSubmission {
     name: string,
@@ -18,14 +19,13 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
     @Inject(BeepService) private beepService: BeepService
 
     @Post('')
-    async make(@Body('sauce') sauce: string, @Body('published') published: Date, @Body('discordId') discordId: string, @Body('authors') authors: string[], @Body('sheets') sheets: SheetSubmission[], @Body('basedOn') basedOn: string[]) {
-        console.log(sauce)
-        console.log(discordId)
-        const beep = await this.beepService.make({
-            sauce,
-            discordId,
-            published
-        })
+    async make(@Body() body: {
+        authors: string[], sheets: {
+        name: string,
+        caption: string
+    }[], basedOn: string[]}) {
+        const { authors, sheets, basedOn, ...rest } = body
+        const beep = await this.beepService.make(rest as BeepDto)
         if (!beep) return null
         if (authors) await this.connectBeepToUsers(beep, authors)
         if (sheets) await this.connectBeepToSheets(beep, sheets)
@@ -34,11 +34,14 @@ export class BeepController extends ContentControllerHost<BeepInterface>(BeepSer
     }
 
     @Put(':discordId')
-    async merge(@Body('sauce') sauce: string, @Param('discordId') discordId: string, @Body('caption') caption: string, @Body('authors') authors: string[], @Body('sheets') sheets: SheetSubmission[], @Body('basedOn') basedOn: string[]) {
-        //@ts-ignore
-        const beep = await this.beepService.merge(discordId, {
-            sauce
-        })
+    async merge(@Body() body: {
+        authors: string[], sheets: {
+        name: string,
+        caption: string
+    }[], basedOn: string[]}, @Param('discordId') discordId: string) {
+        console.log(body)
+        const { authors, sheets, basedOn, ...rest } = body
+        const beep = await this.beepService.merge(discordId, rest as BeepDto)
         if (!beep) return null
         if (authors) await this.connectBeepToUsers(beep, authors)
         if (sheets) await this.connectBeepToSheets(beep, sheets)
