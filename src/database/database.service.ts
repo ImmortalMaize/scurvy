@@ -1,4 +1,4 @@
-import neo4j, { Driver, EagerResult, RecordShape, Session } from 'neo4j-driver';
+import neo4j, { Driver, EagerResult, QueryResult, Record, RecordShape, Session } from 'neo4j-driver';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs';
@@ -32,6 +32,17 @@ export class DatabaseService {
             console.log(e)
             throw new HttpException("Could not read query", 400)
         })
+    }
+    public table(result: QueryResult) {
+        const { records } = result
+        const table = records.map(record => {
+            const row = {}
+            for (const key of record.keys) {
+                row[key] = record.get(key)
+            }
+            return row
+        })
+        return table
     }
     public async run(query: string, parameters?: { [key: string]: any }): Promise<any> {
         return await this.instance.writeCypher(query, parameters).catch((e) => {

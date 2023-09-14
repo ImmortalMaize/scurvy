@@ -11,6 +11,7 @@ export class ContentService {
             this.databaseService.readScript(scriptsDir + 'clearAll')
         )
     }
+    
     generateAltId(from: From, id: string) {
         return `${from}:${id}`
     }
