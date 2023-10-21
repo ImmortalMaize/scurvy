@@ -10,6 +10,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseService } from 'src/database/database.service';
 import { RouterModule } from '@nestjs/core';
+import { BotModule } from 'src/bot/bot.module';
 @Module({
   imports: [
     ContentModule,
@@ -18,6 +19,7 @@ import { RouterModule } from '@nestjs/core';
     UserModule,
     BeepModule,
     DatabaseModule,
+    BotModule,
     ConfigModule.forRoot(),
     RouterModule.register([
       {
@@ -39,8 +41,12 @@ import { RouterModule } from '@nestjs/core';
           {
             path: 'beep',
             module: BeepModule
-          }
+          },
         ]
+      },
+      {
+        path: 'bot',
+        module: BotModule,
       }
     ])
   ],

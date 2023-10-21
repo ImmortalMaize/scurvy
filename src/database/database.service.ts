@@ -44,6 +44,7 @@ export class DatabaseService {
         })
         return table
     }
+    
     public async run(query: string, parameters?: { [key: string]: any }): Promise<any> {
         return await this.instance.writeCypher(query, parameters).catch((e) => {
             this.logger.error(e)

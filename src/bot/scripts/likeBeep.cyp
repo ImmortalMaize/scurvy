@@ -1,0 +1,1 @@
+MERGE (u: User { discordId: $liker }) -[:LIKED]-> (b: Beep { discordId: $beep })<-[:MADE]-(a: User { discordId: $author})

@@ -9,10 +9,4 @@ export class AppController {
   getHello(@Response() res) {
     res.send('<h1>Hello World!</h1>')
   }
-  
-  @Delete()
-  async clear(@Body('model') model: string) {
-    if (!model) throw new HttpException('No model specified.', 400)
-    return await this.databaseService.clear(model)
-  }
 }
