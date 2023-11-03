@@ -23,4 +23,36 @@ export class BotGateway {
 			indexes
 		} }
 	}
+
+	@SubscribeMessage('fixBrokenNodes')
+	async fixBrokenNodes(@MessageBody() data: {
+		label: string,
+		property: string,
+		index: string
+		toFix: {
+			index: string
+			value: string
+		}[]
+	}): Promise<WsResponse<unknown>> {
+		const { toFix, label, property, index } = data
+		console.log(toFix)
+		for (const node of toFix) {
+			if (node.value === null) {
+			await this.databaseService.run(`
+				MATCH (n: ${label} {${index}: ${node.index}})
+				DETACH DELETE n
+			`).then(() => console.log(node.index + " not found. Deleted."))
+			} else {
+			await this.databaseService.run(`
+				MATCH (n: ${label} {${index}: ${node.index}})
+				SET n.${property} = ${node.value}
+				RETURN n
+			`).then(() => console.log(node.index + " updated"))
+		}
+	}
+		const event = "fixedBrokenNodes"
+		return {
+			event, data: null
+		}
+	}
 }
