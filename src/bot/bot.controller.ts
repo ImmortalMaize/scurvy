@@ -10,3 +10,4 @@ export class BotController {
     	return await this.databaseService.run(script, body)
     }
 }
+
