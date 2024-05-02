@@ -4,9 +4,12 @@ import { Content } from "src/database";
 
 export interface UserDto {
     discordId: string
+    username?: string
 }
 
 export interface UserInterface extends Content, UserDto {
+    refreshToken?: string;
+    accessToken?: string;
     made: RelationshipNodeProperties
 }
 

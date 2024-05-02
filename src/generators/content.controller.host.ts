@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, Query, Type } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, Query, Type, UseGuards } from "@nestjs/common";
 import { DatabaseService } from "src/database/database.service";
 import { ContentServiceInterface } from "./content.service.host";
 import { ContentServiceHost } from 'src/generators/content.service.host';
 import { Content } from "../database";
+import { AuthenticatedGuard } from "src/auth/guards/authenticated.guard";
+import { Public } from "src/auth/public.decorator";
 export interface ControllerHostInterface<ContentInterface extends Content, ContentDto> {
     contentService: ContentServiceInterface<ContentInterface, ContentDto>
     make(...args: any): Promise<any>
@@ -19,6 +21,8 @@ export function ContentControllerHost<ContentInterface extends Content, ContentD
     @Controller()
     class ContentControllerHost {
         @Inject(service) readonly contentService: ContentServiceInterface<ContentInterface, ContentDto>
+        
+        @Public()
         @Get()
         async getAll() {
             const result = await this.contentService.getAll()
@@ -30,7 +34,7 @@ export function ContentControllerHost<ContentInterface extends Content, ContentD
             if (result) return result.toJson(); else return null
         }
         @Put(':index')
-        async merge(@Param('index') index: any, @Body() properties: ContentDto) {
+        async merge(@Param('index ') index: any, @Body() properties: ContentDto) {
             const result = (await this.contentService.merge(index, properties))
             if (result) return result.toJson(); else return null
         }

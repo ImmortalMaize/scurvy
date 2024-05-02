@@ -1,3 +1,4 @@
+import { AuthModule } from './../auth/auth.module';
 import { ContentModule } from '../content';
 import { SauceModule } from '../content/sauce';
 import { SheetModule } from '../content/sheet';
@@ -11,8 +12,10 @@ import { AppService } from './app.service';
 import { DatabaseService } from 'src/database/database.service';
 import { RouterModule } from '@nestjs/core';
 import { BotModule } from 'src/bot/bot.module';
+import { PassportModule } from '@nestjs/passport';
 @Module({
   imports: [
+    AuthModule,
     ContentModule,
     SauceModule,
     SheetModule,
@@ -21,6 +24,7 @@ import { BotModule } from 'src/bot/bot.module';
     DatabaseModule,
     BotModule,
     ConfigModule.forRoot(),
+    PassportModule.register({ session: true }),
     RouterModule.register([
       {
         path: 'content',

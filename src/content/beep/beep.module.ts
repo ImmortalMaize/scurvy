@@ -12,6 +12,6 @@ import { SauceModule, SauceService } from 'src/content/sauce';
         BeepController
     ],
     providers: [
-        BeepService, DatabaseService, UserService, SheetService, SauceService],
+        DatabaseService, BeepService, UserService, SheetService, SauceService],
 })
 export class BeepModule { }

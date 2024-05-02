@@ -3,6 +3,7 @@ import { DatabaseService } from 'src/database';
 import From from './types/from.type';
 
 const scriptsDir = '/src/content/scripts/'
+
 @Injectable()
 export class ContentService {
     constructor(private databaseService: DatabaseService) {}

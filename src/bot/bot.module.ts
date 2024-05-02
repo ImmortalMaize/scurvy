@@ -8,6 +8,6 @@ import { BotGateway } from './bot.gateway';
     imports: [DatabaseModule],
     controllers: [
     	BotController],
-    providers: [DatabaseService, BotGateway],
+    providers: [BotGateway, DatabaseService],
 })
 export class BotModule {}

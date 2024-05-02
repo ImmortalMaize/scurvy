@@ -9,6 +9,7 @@ import { Content } from './interfaces/content.interface';
 
 @Injectable()
 export class DatabaseService {
+
     private instance: Neode
     private readonly logger: Logger = new Logger('DatabaseService')
     constructor() {
