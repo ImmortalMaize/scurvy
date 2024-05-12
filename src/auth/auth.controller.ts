@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, Get, UseGuards, Request, Session, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Session, UnauthorizedException, Response, Redirect } from '@nestjs/common';
 import { DiscordAuthGuard } from './guards/discord-auth.guard';
 import { AuthenticatedGuard } from './guards/authenticated.guard';
 import { AuthService } from './auth.service';
@@ -12,6 +12,15 @@ import { Public } from './public.decorator';
 export class AuthController {
     constructor(private authService: AuthService) { }
 
+    async tryWithDiscordToken(@Request() req, fun: (token: string) => Promise<any>) {
+            const { accessToken } = req.user
+            try {
+                return await fun(accessToken)
+            } catch {
+                await this.authService.refreshDiscordToken(req.user)
+                return await fun(req.user.accessToken).catch(() => { throw new UnauthorizedException() })
+            }
+        }
     
     @UseGuards(DiscordAuthGuard)
     @Public()
@@ -21,13 +30,19 @@ export class AuthController {
         return req.user
     }
 
+    @Get('logout')
+    async logout(@Session() session: Record<string, any>) {
+        console.log(session)
+        return await session.destroy()
+    
+    }
+
     @Public()
     @UseGuards(DiscordAuthGuard)
+    @Redirect('http://localhost:5173/login')
     @Get('redirect')
     async redirect(@Request() req) {
-        console.log('redirect')
         console.log(req.user)
-        return req.user
     }
 
     @Get('session')
@@ -43,14 +58,7 @@ export class AuthController {
 
     @Get('discord')
     async getDiscordAccount(@Request() req) {
-        const { user } = req
-        const { accessToken, refreshToken } = user
-        try {
-            return await this.authService.getDiscordProfile(accessToken)
-        } catch {
-            await this.authService.refreshDiscordToken(user)
-            return await this.authService.getDiscordProfile(user.accessToken).catch(() => { throw new UnauthorizedException()})
-        }
+        this.tryWithDiscordToken(req, this.authService.getDiscordProfile)
     }
 
     @Get('sessions')

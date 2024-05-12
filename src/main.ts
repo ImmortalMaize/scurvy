@@ -17,7 +17,10 @@ async function bootstrap() {
     prefix: "scurvy:",
   })
 
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, { cors: {
+    credentials: true,
+    
+  } });
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
@@ -25,15 +28,18 @@ async function bootstrap() {
       saveUninitialized: false,
       store: redisStore,
       rolling: true,
+      name: process.env.SESSION_COOKIE,
       cookie: {
         maxAge: 360000,
         secure: false,
+        domain: "localhost",
+        httpOnly: false
       }
     })
   );
   app.use(passport.initialize());
   app.use(passport.session());
-
+  
   await app.listen(3000);
   const url = await app.getUrl()
   console.log(`YAAAAAAARGGGH!!!!
