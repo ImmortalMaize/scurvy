@@ -1,4 +1,4 @@
-import { RelationshipNodeProperties, StringPropertyTypes } from "neode";
+import { RelationshipNodeProperties } from "neode";
 
 export const based: RelationshipNodeProperties = {
     type: "relationship",
@@ -9,3 +9,4 @@ export const based: RelationshipNodeProperties = {
         type: "string",
     }
 }
+

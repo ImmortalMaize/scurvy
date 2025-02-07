@@ -1,3 +1,7 @@
+import { CreqService } from './../content/creq/creq.service';
+import { CreqModule } from './../content/creq/creq.module';
+import { CreqController } from './../content/creq/creq.controller';
+import { CritiqueController } from './../content/critique/critique.controller';
 import { AuthModule } from './../auth/auth.module';
 import { ContentModule } from '../content';
 import { SauceModule } from '../content/sauce';
@@ -15,6 +19,7 @@ import { BotModule } from 'src/bot/bot.module';
 import { PassportModule } from '@nestjs/passport';
 @Module({
   imports: [
+    CreqModule,
     AuthModule,
     ContentModule,
     SauceModule,
@@ -46,6 +51,10 @@ import { PassportModule } from '@nestjs/passport';
             path: 'beep',
             module: BeepModule
           },
+          {
+            path: 'creq',
+            module: CreqModule
+          }
         ]
       },
       {
@@ -54,7 +63,10 @@ import { PassportModule } from '@nestjs/passport';
       }
     ])
   ],
-  controllers: [AppController],
-  providers: [AppService, DatabaseService],
+  controllers: [
+    CreqController,
+    CritiqueController, AppController],
+  providers: [
+    CreqService, AppService, DatabaseService],
 })
 export class AppModule { }

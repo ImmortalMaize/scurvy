@@ -3,7 +3,7 @@ import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs';
 import * as Neode from 'neode';
-import { Beep, User, Sheet, Sauce } from '../content/models';
+import { Beep, User, Sheet, Sauce, Creq } from '../content/models';
 import { Content } from './interfaces/content.interface';
 
 
@@ -18,7 +18,8 @@ export class DatabaseService {
             Beep,
             User,
             Sheet,
-            Sauce
+            Sauce,
+            Creq
         })
     }
     public getDaddy() {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database';
-import From from './types/from.type';
+import From from './meta/types/from.type';
 
 const scriptsDir = '/src/content/scripts/'
 

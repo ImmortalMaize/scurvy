@@ -1,5 +1,15 @@
 import { RelationshipNodeProperties } from "neode"
 
+export const submittedCreq: RelationshipNodeProperties = {
+    type: "relationship",
+    target: "Critique_Request",
+    relationship: "SUBMITTED",
+    direction: "out",
+    properties: {
+        tags: "string"
+    }
+}
+
 export const made: RelationshipNodeProperties = {
     type: "relationship",
     target: "Beep",
