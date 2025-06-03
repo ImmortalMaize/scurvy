@@ -63,9 +63,7 @@ import { PassportModule } from '@nestjs/passport';
       }
     ])
   ],
-  controllers: [
-    CreqController,
-    CritiqueController, AppController],
+  controllers: [AppController],
   providers: [
     CreqService, AppService, DatabaseService],
 })

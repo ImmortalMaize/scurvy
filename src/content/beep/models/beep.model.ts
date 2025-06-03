@@ -1,11 +1,22 @@
 import { SchemaObject, RelationshipNodeProperties } from "neode";
-import { based, made, submitted, likedBeep } from "./rel";
+import { based, made, submitted, liked } from "./rel";
 import { Content } from "src/database";
 
+
+export interface DiscordBeepDto {
+    sauce?: string,
+    discordId: string,
+    title?: string,
+    blurb?: string,
+    published?: number
+}
+
 export interface BeepDto {
-    sauce: string,
-    discordId: string
-    published: Date
+    sauce?: string,
+    discordId: string,
+    title?: string,
+    blurb?: string,
+    published?: number,
 }
 
 export interface BeepInterface extends Content, BeepDto {
@@ -19,7 +30,6 @@ export const Beep = {
         required: true,
         index: true,
         unique: true,
-        uri: true
     },
     discordId: {
         type: "string",
@@ -29,10 +39,16 @@ export const Beep = {
     },
     published: {
         type: 'date',
-        required: true
+        required: true,
+        default: () => new Date()
+    },
+    title: {
+        type: 'string',
+        required: false,
+        default: "untitled"
     },
     made,
     submitted,
     based,
-    likedBeep
+    liked
 } as SchemaObject

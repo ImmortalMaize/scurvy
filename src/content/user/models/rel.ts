@@ -14,7 +14,7 @@ export const made: RelationshipNodeProperties = {
     type: "relationship",
     target: "Beep",
     relationship: "MADE",
-    direction: "out"
+    direction: "out",
 }
 
 export const likedBeep: RelationshipNodeProperties = {
@@ -23,3 +23,5 @@ export const likedBeep: RelationshipNodeProperties = {
     relationship: "LIKED",
     direction: "out",
 }
+
+export const relationships: Array<RelationshipNodeProperties> = [submittedCreq, made, likedBeep]

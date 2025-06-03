@@ -11,11 +11,13 @@ export class AuthenticatedGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+    console.log(context.getClass())
     if (isPublic) {
       return true;
     }
     const request = context.switchToHttp().getRequest<Request>();
-    console.log(request.headers);
+    console.log(request.body)
+    console.log(request.user ?? "No user.");
     return request.isAuthenticated();
   }
 }

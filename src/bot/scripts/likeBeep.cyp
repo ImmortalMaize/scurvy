@@ -1,1 +1,3 @@
-MERGE (u: User { discordId: $liker }) -[:LIKED]-> (b: Beep { discordId: $beep })<-[:MADE]-(a: User { discordId: $author})
+MATCH (user: User { discordId: $liker })
+MATCH (beep: Beep { discordId: $beep })
+CREATE user-[like:LIKED]->beep

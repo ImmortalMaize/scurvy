@@ -22,10 +22,10 @@ import { APP_GUARD } from '@nestjs/core';
     })],
     controllers: [AuthController],
     providers: [AuthService, DiscordStrategy, DiscordAuthGuard, UserService, DatabaseService, SessionSerializer,
-        {
-          provide: APP_GUARD,
-          useClass: AuthenticatedGuard,
-        },
+      {
+        provide: APP_GUARD,
+        useClass: AuthenticatedGuard,
+      },
       ]
 })
 export class AuthModule { }

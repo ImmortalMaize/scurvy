@@ -4,6 +4,7 @@ import { Content } from "src/database";
 import { DatabaseService } from "src/database/database.service";
 
 export interface ContentServiceInterface<ContentInterface extends Content, ContentDto> {
+    getDefinedRelationships(): Map<string, Neode.RelationshipType>
     make(properties: ContentDto): Promise<Neode.Node<unknown> | void>
     merge(value: string, properties?: ContentDto): Promise<Neode.Node<unknown> | void>
     findByPrimary(key: string): Promise<Neode.Node<unknown> | void>
@@ -25,24 +26,31 @@ export interface ContentServiceInterface<ContentInterface extends Content, Conte
 export function ContentServiceHost<ContentInterface extends Content, ContentDto>(model: string, index: keyof ContentInterface): Type<ContentServiceInterface<ContentInterface, ContentDto>> {
     class ContentServiceHost implements ContentServiceInterface<ContentInterface, ContentDto> {
         @Inject(DatabaseService) protected readonly databaseService: DatabaseService
+        constructor() {
+
+        }
         private readonly logger = new Logger(model + 'Service')
-        async make(properties: ContentDto) {
+        
+        getDefinedRelationships() {
+            return this.databaseService.getDaddy().model(model).relationships()
+        }
+        async make(properties: ContentDto): Promise<Neode.Node<ContentInterface>> {
             this.logger.log(`Making ${model.toLowerCase()} with properties:
             ${JSON.stringify(properties)}`)
-            return await this.databaseService.make(model, properties)
+            return await this.databaseService.make(model, properties) as Neode.Node<ContentInterface>
         }
 
-        async merge(value: string, properties: ContentDto) {
-            this.logger.log(`Merging ${model.toLowerCase()} with properties:
+        async merge(value: string, properties: ContentDto): Promise<Neode.Node<ContentInterface>> {
+            this.logger.log(`Merging ${model.toLowerCase()}: ${value} with properties:
             ${JSON.stringify(properties)}`)
-            return await this.databaseService.merge(model, { [index]: value, ...properties })
+            return await this.databaseService.merge(model, { [index]: value, ...properties }) as Neode.Node<ContentInterface>
         }
 
-        async findByPrimary(key: string) {
+        async findByPrimary(key: string): Promise<Neode.Node<ContentInterface>>  {
             const found = await this.databaseService.findByPrimary(model, key)
             if (found) {
                 this.logger.log(`Found ${model.toLowerCase()} with primary key "${key}"`)
-                return found
+                return found as Neode.Node<ContentInterface>
             }
             else {
                 this.logger.error(`Could not find ${model.toLowerCase()} with primary key "${key}"`)
@@ -54,7 +62,7 @@ export function ContentServiceHost<ContentInterface extends Content, ContentDto>
             const found = await this.databaseService.findById(model, id)
             if (found) {
                 this.logger.log(`Found ${model.toLowerCase()} with id "${id}"`)
-                return found
+                return found as Neode.Node<ContentInterface>
             }
             else {
                 this.logger.error(`Could not find ${model.toLowerCase()} with id "${id}"`)
@@ -65,7 +73,7 @@ export function ContentServiceHost<ContentInterface extends Content, ContentDto>
             const found = await this.databaseService.findByKey(model, key, value)
             if (found) {
                 this.logger.log(`Found ${model.toLowerCase()} with ${key} "${value}"`)
-                return found
+                return found as Neode.Node<ContentInterface>
             }
             else {
                 this.logger.error(`Could not find ${model.toLowerCase()} with ${key} "${value}"`)
@@ -93,7 +101,7 @@ export function ContentServiceHost<ContentInterface extends Content, ContentDto>
                 this.logger.log(`Found ${model.toLowerCase()} with primary key "${key}"`)
                 this.logger.log(`Updating with properties:
                 ${JSON.stringify(properties)}`)
-                return await found.update(properties)
+                return await found.update(properties) as Neode.Node<ContentInterface>
             }
             else {
                 this.logger.error(`Could not find ${model.toLowerCase()} with primary key "${key}"`)
@@ -106,7 +114,7 @@ export function ContentServiceHost<ContentInterface extends Content, ContentDto>
                 this.logger.log(`Found ${model.toLowerCase()} with id "${id}"`)
                 this.logger.log(`Updating with properties:
                 ${JSON.stringify(properties)}`)
-                return found.update(properties)
+                return await found.update(properties) as Neode.Node<ContentInterface>
             }
             else {
                 this.logger.error(`Could not find ${model.toLowerCase()} with id "${id}"`)
@@ -119,7 +127,7 @@ export function ContentServiceHost<ContentInterface extends Content, ContentDto>
                 this.logger.log(`Found ${model.toLowerCase()} with ${key} "${value}"`)
                 this.logger.log(`Updating with properties:
                 ${JSON.stringify(properties)}`)
-                return found.update(properties)
+                return await found.update(properties) as Neode.Node<ContentInterface>
             }
             else {
                 this.logger.error(`Could not find ${model.toLowerCase()} with ${key} "${value}"`)
@@ -133,7 +141,7 @@ export function ContentServiceHost<ContentInterface extends Content, ContentDto>
                 ${JSON.stringify(query)}`)
                 this.logger.log(`Updating with properties:
                 ${JSON.stringify(properties)}`)
-                return found.forEach(async (item) => {
+                 found.map(async (item) => {
                     await item.update(properties)
                 })
             }

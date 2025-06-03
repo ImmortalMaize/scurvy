@@ -4,7 +4,8 @@ export const made: RelationshipNodeProperties = {
     type: "relationship",
     target: "User",
     relationship: "MADE",
-    direction: "in"
+    direction: "in",
+    eager: true
 }
 
 export const submitted: RelationshipNodeProperties = {
@@ -14,7 +15,7 @@ export const submitted: RelationshipNodeProperties = {
     direction: "out",
     properties: {
         caption: "string"
-    }
+    },
 }
 
 export const based: RelationshipNodeProperties = {
@@ -24,10 +25,10 @@ export const based: RelationshipNodeProperties = {
     direction: "out",
     properties: {
         type: "string",
-    }
+    },
 }
 
-export const likedBeep: RelationshipNodeProperties = {
+export const liked: RelationshipNodeProperties = {
     type: "relationship",
     target: "Sauce",
     relationship: "LIKED",

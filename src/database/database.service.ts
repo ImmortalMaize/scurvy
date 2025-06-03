@@ -14,13 +14,16 @@ export class DatabaseService {
     private readonly logger: Logger = new Logger('DatabaseService')
     constructor() {
         const { NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD } = process.env;
-        this.instance = new Neode(NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD).with({
+        this.instance = new Neode(NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, undefined, undefined, {
+            "disableLosslessIntegers": true
+        }).with({
             Beep,
             User,
             Sheet,
             Sauce,
             Creq
         })
+        
     }
     public getDaddy() {
         return this.instance;
@@ -28,12 +31,11 @@ export class DatabaseService {
     public readScript(data: string): string {
         return fs.readFileSync(join(process.cwd() + data + ".cyp"), {encoding: 'utf8'});    
     }
-    public async read(query: string, parameters?: { [key: string]: any }): Promise<any> {
-        return await this.instance.readCypher(query, parameters).catch((e) => {
+    public async read(query: string, parameters?: { [key: string]: any }): Promise<QueryResult> {
+        return await this.instance.cypher(query, parameters).catch((e) => {
             this.logger.error(e)
-            console.log(e)
             throw new HttpException("Could not read query", 400)
-        })
+        }) as unknown as QueryResult<RecordShape>
     }
     public table(result: QueryResult) {
         const { records } = result

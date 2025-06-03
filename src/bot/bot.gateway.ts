@@ -56,5 +56,9 @@ export class BotGateway {
 		}
 	}
 
-	
+	@SubscribeMessage('newCreq')
+	async handleNewCreq(@MessageBody() data) {
+		console.log(data)
+	}
+
 }
