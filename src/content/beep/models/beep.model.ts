@@ -38,7 +38,7 @@ export const Beep = {
         unique: true
     },
     published: {
-        type: 'date',
+        type: 'datetime',
         required: true,
         default: () => new Date()
     },

@@ -3,7 +3,7 @@ import { UserDto, UserInterface } from "./models/user.model";
 import { DatabaseService } from "src/database";
 import { Inject } from "@nestjs/common";
 import { readFileSync } from "fs";
-import { LadderEntries, picksLadder } from "./models/ladders";
+import { LadderEntries, picksLadder } from "../meta/classes/ladders";
 export class UserService extends ContentServiceHost<UserInterface, UserDto>('User', "discordId") {
     @Inject(DatabaseService) private databaseService: DatabaseService
     public async calculateXPFromPicks(discordId: string) {

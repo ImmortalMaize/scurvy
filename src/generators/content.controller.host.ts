@@ -74,6 +74,7 @@ export function ContentControllerHost<ContentInterface extends Content, ContentD
         }
 
         // routes by key
+        @Public()
         @Get(':key/:value')
         async findByKey(@Param('key') key: string, @Param('value') value: any) {
             const result = (await this.contentService.findByKey(key, value))

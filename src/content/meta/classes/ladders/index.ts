@@ -2,12 +2,15 @@ export type LadderEntries = Array<{ score: number }>
 type Step = [number, number]
 type Steps = Array<Step>
 export class Ladder {
-    constructor(public steps: Steps, public handicap: number = 1) {}
-
+    public steps: Steps
+    constructor(steps: Steps, public handicap: number = 1) {
+        this.steps = steps.sort((a, b) => a[0] - b[0])
+    }
     //items to be filtered, reduced, et cetera.
     #entries: LadderEntries = []
 
     // threshold for corresponding reward.
+
     get tiers() {
             const { steps } = this
         return steps.map(step => step[0])
@@ -18,7 +21,17 @@ export class Ladder {
             const { steps } = this
         return steps.map(step => step[1])
         }
-
+    public calculateThreshold = (index: number): number => {
+        const { values } = this
+        const subladder = values.slice(0, index)
+        return subladder.reduce((i, j) => i + j)
+    }
+    get floor() {
+        return this.values[0]
+    }
+    get ceiling() {
+        return this.values.reduce((i, j) => i + j)
+    }
     get entries() {
             return this.#entries
         }
@@ -28,8 +41,7 @@ export class Ladder {
 
     // filters entries with scores over a specified amount.
     public populateTier = (tier: number): LadderEntries => {
-            const { entries } = this
-            console.log(entries.filter(entry => entry.score >= tier))        
+            const { entries } = this     
             return entries.filter(entry => entry.score >= tier)
         }
 
@@ -66,7 +78,7 @@ export class Ladder {
         [10, 10],
         [20, 30],
         [30, 100],
-        [40, 300]
+        [40, 300],
     ])
 
     export const originalsLadder = new Ladder(baseSheetSteps)

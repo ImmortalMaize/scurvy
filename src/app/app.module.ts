@@ -17,6 +17,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { RouterModule } from '@nestjs/core';
 import { BotModule } from 'src/bot/bot.module';
 import { PassportModule } from '@nestjs/passport';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     CreqModule,
@@ -61,7 +62,8 @@ import { PassportModule } from '@nestjs/passport';
         path: 'bot',
         module: BotModule,
       }
-    ])
+    ]),
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
   providers: [

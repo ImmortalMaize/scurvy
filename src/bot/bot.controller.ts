@@ -6,6 +6,7 @@ import { DatabaseService } from 'src/database';
 import { BeepService } from './../content/beep/beep.service';
 import Neode from 'neode';
 import { Public } from 'src/auth/public.decorator';
+import { picksLadder } from 'src/content/meta/classes/ladders';
 
 @Controller()
 export class BotController {
@@ -13,7 +14,7 @@ export class BotController {
 
     @Public()
     @Post('getXP')
-    public async calculateXP (@Body() body: { author: DiscordUserDto }) {
+    public async calculateXP(@Body() body: { author: DiscordUserDto }) {
         const { author } = body
         return await this.userService.calculateXPFromPicks(author.discordId)
     }
@@ -23,7 +24,8 @@ export class BotController {
     public async postInFinishedBeeps(@Body() body: { beep: DiscordBeepDto, author: DiscordUserDto }) {
         console.log(body.beep)
         const { discordId, title, sauce, published, blurb } = body.beep
-        const beep = await this.beepService.make({
+        let beep = await this.beepService.findByKey("sauce", sauce)
+        if (!beep) beep = await this.beepService.make({
             discordId,
             title,
             sauce,
@@ -38,7 +40,7 @@ export class BotController {
             username: dtoAuthor.username
         }).catch(() => { throw new BadRequestException('Could not find or create author.') }) as Neode.Node<UserInterface>
 
-        return (await this.beepService.addAuthor(beep, author as Neode.Node<UserInterface>)).toJson()
+        return (await this.beepService.addAuthor(beep as Neode.Node<BeepInterface>, author as Neode.Node<UserInterface>)).properties
     }
 
     @Public()
@@ -56,7 +58,7 @@ export class BotController {
         }).catch(() => { throw new BadRequestException('Could not find or create author.') }) as Neode.Node<UserInterface>
 
         // Find beep. If non-existent create that beep.
-        let beep = await this.beepService.findByKey("discordId", dtoBeep.discordId)
+        let beep = await this.beepService.findByKey("sauce", dtoBeep.sauce)
         if (!beep) beep = await this.beepService.make({
             title: dtoBeep.title,
             discordId: dtoBeep.discordId,
@@ -82,6 +84,52 @@ export class BotController {
             if (beep && liker) likers.push((await this.beepService.addLike(beep as Neode.Node<BeepInterface>, liker as Neode.Node<UserInterface>)).properties)
         }
         return likers
+    }
+
+    @Public()
+    @Post("getPicksTemporally")
+    public async getPicks(@Body() body: { after: string, before: string }) {
+        const { after, before } = body
+        const beeps = await this.beepService.getBeepsTemporally(after, before)
+        picksLadder.entries = beeps
+        return picksLadder.populateTier(picksLadder.floor).sort((a, b) => b.score - a.score)
+    }
+
+    @Public()
+    @Post("updateTitle")
+    public async updateTitle(@Body() body: { discordId: string, title: string }) {
+        const { discordId, title } = body
+        if (!discordId || !title) throw new BadRequestException("Sauce and title are required.")
+        const beep = await this.beepService.findByKey("discordId", discordId)
+        if (!beep) throw new NotFoundException("Beep not found.")
+        return (await beep.update({ title })).properties()
+    }
+
+    @Public()
+    @Post("updateBeep")
+    public async updateBeep(@Body() body: { beep: DiscordBeepDto, author: DiscordUserDto }) {
+        const { author: dtoAuthor } = body
+        let author = await this.userService.findByKey("discordId", dtoAuthor.discordId)
+        if (!author) author = await this.userService.make({
+            discordId: dtoAuthor.discordId,
+            username: dtoAuthor.username
+        }).catch(() => { throw new BadRequestException('Could not find or create author.') }) as Neode.Node<UserInterface>
+
+        const { beep: dtoBeep } = body
+        if (!dtoBeep.discordId || !dtoBeep.sauce) throw new BadRequestException("Discord ID and sauce are required.")
+
+        // Find beep. If non-existent create that beep.
+        let beep = await this.beepService.findByKey("discordId", dtoBeep.discordId).catch(() => { throw new BadRequestException('Could not find beep.') }) as Neode.Node<BeepInterface>
+        if (beep) (await beep.update(dtoBeep as BeepInterface)).properties()
+        beep = await this.beepService.make({
+            discordId: dtoBeep.discordId,
+            title: dtoBeep.title,
+            sauce: dtoBeep.sauce,
+            published: dtoBeep.published,
+            blurb: dtoBeep.blurb
+        }).catch(() => { throw new BadRequestException('Could not create beep.') }) as Neode.Node<BeepInterface>
+
+        if (beep && author) await this.beepService.addAuthor(beep as Neode.Node<BeepInterface>, author as Neode.Node<UserInterface>)
     }
 }
 
